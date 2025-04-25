@@ -50,11 +50,9 @@
             left: 50%;
             bottom: 0;
             transform: translateX(-50%);
-            width: 120px;
+            width: 220px;
             height: 100%;
-            background-color: rgba(60, 40, 30, 0.6);
-            border-left: 3px solid rgba(255, 255, 255, 0.2);
-            border-right: 3px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(60, 40, 30, 0.8);
             z-index: 1;
         }
 
@@ -412,11 +410,14 @@
             position: absolute;
             top: 20px;
             right: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.8);
+            /* Сделаем более непрозрачным */
             padding: 10px 15px;
             border-radius: 10px;
             text-align: right;
             z-index: 10;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            /* Добавляем тень */
         }
 
         #menu-buttons {
@@ -427,7 +428,7 @@
         }
 
         .menu-button {
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.8);
             color: white;
             border: none;
             border-radius: 5px;
@@ -435,6 +436,7 @@
             margin-right: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
         }
 
         .menu-button:hover {
@@ -785,52 +787,6 @@
                         gamePath.appendChild(tile);
                     }
 
-                    // Более простое размещение свечей - по 3 с каждой стороны
-                    const torchPositions = [0.2, 0.5, 0.8]; // относительные позиции (от 0 до 1)
-
-                    // Размещаем свечи на обеих сторонах дорожки
-                    torchPositions.forEach(position => {
-                        // Вычисляем абсолютную позицию на основе высоты пути
-                        const torchPosition = pathHeight * position;
-
-                        // Создаем левую свечу
-                        createSimpleTorch('left', torchPosition);
-
-                        // Создаем правую свечу
-                        createSimpleTorch('right', torchPosition);
-                    });
-
-                    // Упрощенная функция создания свечи
-                    function createSimpleTorch(side, position) {
-                        const torch = document.createElement('div');
-                        torch.className = 'torch';
-
-                        // Размещаем свечу с одной из сторон дорожки
-                        if (side === 'left') {
-                            torch.style.left = '-30px';
-                        } else {
-                            torch.style.right = '-30px';
-                        }
-
-                        torch.style.bottom = position + 'px';
-
-                        // Создаем свет от свечи
-
-
-                        gamePath.appendChild(torch);
-                    }
-
-                    // Добавляем стиль для анимации мерцания света
-                    const styleElement = document.createElement('style');
-                    styleElement.textContent = `
-        @keyframes flicker {
-            0%, 100% { opacity: 0.5; transform: scale(1); }
-            25% { opacity: 0.6; transform: scale(0.98); }
-            50% { opacity: 0.7; transform: scale(1.02); }
-            75% { opacity: 0.6; transform: scale(0.95); }
-        }
-    `;
-                    document.head.appendChild(styleElement);
                 });
             </script>
 
@@ -913,6 +869,10 @@
                 </div>
                 <div class="modal-body">
                     <p>Adjust game settings:</p>
+                    <div style="margin: 15px 0;">
+                        <label for="background-toggle">Use Background Images:</label>
+                        <input type="checkbox" id="background-toggle" checked>
+                    </div>
                     <div style="margin: 15px 0;">
                         <label for="sound-toggle">Sound Effects:</label>
                         <input type="checkbox" id="sound-toggle" checked>
@@ -1195,6 +1155,13 @@
                         '#552233',  // Level 4 - Burgundy
                         '#335522'   // Level 5 - Olive green
                     ],
+                    backgroundImages: [
+                        './loc.jpeg',  // Лес
+                        './loc1.jpeg',  // Пещера
+                        './loc3.jpeg',  // Ночной город
+                        'https://images.unsplash.com/photo-1518290409845-94397e8a431d?auto=format&fit=crop&w=1200&q=80',  // Руины
+                        'https://images.unsplash.com/photo-1518070588484-2b53926cba76?auto=format&fit=crop&w=1200&q=80'   // Замок
+                    ],
                     monsters: [
                         '#ff0000',  // Level 1 - Red
                         '#ff6600',  // Level 2 - Orange
@@ -1326,7 +1293,20 @@
 
                 // Обновление визуальных стилей уровня
                 const levelIndex = Math.min(this.state.level - 1, this.state.backgrounds.length - 1);
-                this.elements.gameArea.style.backgroundColor = this.state.backgrounds[levelIndex];
+
+                // Устанавливаем фоновое изображение вместо цвета
+                if (this.state.backgroundImages && this.state.backgroundImages.length > 0) {
+                    const bgImage = this.state.backgroundImages[levelIndex];
+                    this.elements.gameArea.style.backgroundColor = ''; // Убираем цвет фона
+                    this.elements.gameArea.style.backgroundImage = `url(${bgImage})`;
+                    this.elements.gameArea.style.backgroundSize = 'cover';
+                    this.elements.gameArea.style.backgroundPosition = 'center';
+                } else {
+                    // Запасной вариант с цветным фоном
+                    this.elements.gameArea.style.backgroundImage = '';
+                    this.elements.gameArea.style.backgroundColor = this.state.backgrounds[levelIndex];
+                }
+
                 this.elements.monster.style.backgroundColor = this.state.monsters[levelIndex];
             }
 
@@ -1888,9 +1868,13 @@
                 this.state.soundEnabled = this.elements.soundToggle.checked;
                 this.state.difficulty = this.elements.difficultySelect.value;
 
+                // Добавьте эту строчку:
+                this.state.useBackgroundImages = document.getElementById('background-toggle').checked;
+
                 // Если игра в процессе, обновляем поведение монстра для новой сложности
                 if (!this.state.gameOver) {
                     this._startMonsterBehavior();
+                    this._updateUI(); // Обновляем UI чтобы применить изменения фона
                 }
 
                 this._closeAllModals();
