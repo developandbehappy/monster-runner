@@ -6,13 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Stealth Approach</title>
     <style>
+        /* Базовые стили и сброс */
         html,
         body {
             height: 100%;
             width: 100%;
-        }
-
-        body {
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
@@ -22,6 +20,7 @@
             touch-action: manipulation;
         }
 
+        /* Контейнеры */
         #game-container {
             position: relative;
             width: 100vw;
@@ -38,7 +37,14 @@
             transition: background-color 0.5s;
         }
 
-        /* Path design */
+        /* Общие позиционированные элементы */
+        .centered-element {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Путь и его элементы */
         .game-path {
             position: absolute;
             left: 50%;
@@ -62,6 +68,7 @@
             border-top: 2px solid rgba(255, 255, 255, 0.1);
         }
 
+        /* Панель прогресса */
         #progress-bar {
             position: absolute;
             left: 20px;
@@ -83,10 +90,20 @@
             transition: height 0.2s;
         }
 
+        #monster-container {
+            position: absolute;
+            left: 50%;
+            top: 50px;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            z-index: 3;
+        }
+
         #monster {
             position: absolute;
-            top: 50px;
             left: 50%;
+            top: 0;
             transform: translateX(-50%);
             width: 80px;
             height: 80px;
@@ -98,36 +115,24 @@
             color: white;
             font-weight: bold;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
-            /* Жуткое свечение */
             animation: pulse 2s infinite alternate;
             z-index: 5;
         }
 
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
-            }
-
-            100% {
-                box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
-            }
+        #monster-vision {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 340px;
+            height: 850px;
+            background: linear-gradient(to bottom, rgba(231, 76, 60, 0.3), rgba(231, 76, 60, 0.1));
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            animation: visionPulse 4s infinite alternate;
+            z-index: 2;
         }
 
-        /* Пульсирующее тело */
-        @keyframes monsterBreathing {
-            0% {
-                transform: translateX(-50%) scale(1);
-            }
-
-            50% {
-                transform: translateX(-50%) scale(1.05);
-            }
-
-            100% {
-                transform: translateX(-50%) scale(1);
-            }
-        }
-
+        /* Глаза монстра */
         .monster-eye {
             position: absolute;
             width: 16px;
@@ -150,34 +155,6 @@
             animation: blinkRight 8s infinite;
         }
 
-        @keyframes blinkLeft {
-
-            0%,
-            95%,
-            97% {
-                transform: scaleY(1);
-            }
-
-            96%,
-            98% {
-                transform: scaleY(0.1);
-            }
-        }
-
-        @keyframes blinkRight {
-
-            0%,
-            92%,
-            94% {
-                transform: scaleY(1);
-            }
-
-            93%,
-            95% {
-                transform: scaleY(0.1);
-            }
-        }
-
         .monster-pupil {
             position: absolute;
             width: 8px;
@@ -190,26 +167,7 @@
             animation: lookAround 5s infinite;
         }
 
-        @keyframes lookAround {
-
-            0%,
-            100% {
-                transform: translate(0, 0);
-            }
-
-            25% {
-                transform: translate(2px, 2px);
-            }
-
-            50% {
-                transform: translate(-2px, 1px);
-            }
-
-            75% {
-                transform: translate(1px, -2px);
-            }
-        }
-
+        /* Рот монстра */
         .monster-mouth {
             position: absolute;
             width: 40px;
@@ -252,67 +210,7 @@
             animation: tongueMove 3s infinite;
         }
 
-        @keyframes tongueMove {
-
-            0%,
-            100% {
-                transform: translateX(-50%) scaleY(0.5);
-            }
-
-            50% {
-                transform: translateX(-50%) scaleY(1);
-            }
-        }
-
-        #monster-vision {
-            position: absolute;
-            top: 0px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 340px;
-            height: 850px;
-            background: linear-gradient(to bottom, rgba(231, 76, 60, 0.3), rgba(231, 76, 60, 0.1));
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-            animation: visionPulse 4s infinite alternate;
-            z-index: 4;
-        }
-
-        @keyframes visionPulse {
-            0% {
-                opacity: 0.6;
-            }
-
-            100% {
-                opacity: 1;
-            }
-        }
-
-        .shaking {
-            animation: shake 0.1s infinite !important;
-        }
-
-        @keyframes shake {
-            0% {
-                transform: translateX(-50%) translateY(0) scale(1.2);
-            }
-
-            25% {
-                transform: translateX(-51%) translateY(1px) scale(1.2);
-            }
-
-            50% {
-                transform: translateX(-50%) translateY(0) scale(1.2);
-            }
-
-            75% {
-                transform: translateX(-49%) translateY(-1px) scale(1.2);
-            }
-
-            100% {
-                transform: translateX(-50%) translateY(0) scale(1.2);
-            }
-        }
-
+        /* Текст "сон" монстра */
         #monster-sleep-text {
             position: absolute;
             top: -8px;
@@ -337,20 +235,6 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
-        @keyframes float-z {
-            0% {
-                transform: translateY(0) rotate(0);
-            }
-
-            50% {
-                transform: translateY(-10px) rotate(5deg);
-            }
-
-            100% {
-                transform: translateY(0) rotate(0);
-            }
-        }
-
         .z1 {
             animation-delay: 0s;
         }
@@ -363,6 +247,7 @@
             animation-delay: 0.6s;
         }
 
+        /* Игрок и его компоненты */
         #player {
             position: absolute;
             bottom: 150px;
@@ -431,7 +316,7 @@
             width: 6px;
             height: 10px;
             background-color: rgba(173, 216, 230, 0.8);
-            border-radius: 50% 50% 50% 50%;
+            border-radius: 50%;
             opacity: 0;
             transition: opacity 0.5s, transform 1s;
         }
@@ -448,9 +333,12 @@
             transform: rotate(15deg);
         }
 
-        /* Анимация для пота */
+        /* Страх игрока */
         .scared .sweat-drop {
             opacity: 1;
+        }
+
+        .scared .sweat-drop-left {
             transform: translateY(15px) rotate(-15deg);
         }
 
@@ -458,28 +346,11 @@
             transform: translateY(15px) rotate(15deg);
         }
 
-        /* Дрожание для испуганного персонажа */
-        @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(-50%) rotate(0deg);
-            }
-
-            25% {
-                transform: translateX(-50%) rotate(-1deg);
-            }
-
-            75% {
-                transform: translateX(-50%) rotate(1deg);
-            }
-        }
-
-
         .scared {
             animation: shake 0.3s infinite;
         }
 
+        /* UI элементы */
         #button-area {
             position: absolute;
             bottom: 0;
@@ -493,7 +364,6 @@
             z-index: 999;
         }
 
-        /* Improved step button styling */
         #action-button {
             width: 120px;
             height: 120px;
@@ -537,6 +407,7 @@
             background: linear-gradient(145deg, #c0392b, #e74c3c);
         }
 
+        /* Статистика и меню */
         #stats {
             position: absolute;
             top: 20px;
@@ -545,17 +416,6 @@
             padding: 10px 15px;
             border-radius: 10px;
             text-align: right;
-            z-index: 10;
-        }
-
-        .coins {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: gold;
-            border-radius: 50%;
-            opacity: 0;
-            transition: transform 1s, opacity 1s;
             z-index: 10;
         }
 
@@ -581,36 +441,36 @@
             background-color: rgba(0, 0, 0, 0.9);
         }
 
-        #level-info {
+        /* Информационные окна и модальные окна */
+        #level-info,
+        #game-over {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             background-color: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 10px;
             text-align: center;
             opacity: 0;
             transition: opacity 0.5s;
-            pointer-events: none;
             z-index: 100;
         }
 
+        #level-info {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
         #game-over {
-            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s;
-            z-index: 100;
         }
 
         #restart-button {
@@ -624,6 +484,18 @@
             cursor: pointer;
         }
 
+        /* Анимированные объекты (монеты/очки) */
+        .coins {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: gold;
+            border-radius: 50%;
+            opacity: 0;
+            transition: transform 1s, opacity 1s;
+            z-index: 10;
+        }
+
         .points {
             position: absolute;
             font-size: 22px;
@@ -633,7 +505,7 @@
             z-index: 15;
         }
 
-        /* Modal window styling */
+        /* Модальные окна */
         .modal {
             position: fixed;
             top: 0;
@@ -720,7 +592,7 @@
             color: white;
         }
 
-        /* Environment elements */
+        /* Окружающие элементы */
         .torch {
             position: absolute;
             width: 10px;
@@ -740,6 +612,131 @@
             border-radius: 50% 50% 25% 25%;
             box-shadow: 0 0 20px #fa0, 0 0 40px #fd0;
             animation: flicker 0.5s infinite alternate;
+        }
+
+        /* Анимации - объединены и оптимизированы */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+            }
+
+            100% {
+                box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+            }
+        }
+
+        @keyframes monsterBreathing {
+            0% {
+                transform: translateX(-50%) scale(1);
+            }
+
+            50% {
+                transform: translateX(-50%) scale(1.05);
+            }
+
+            100% {
+                transform: translateX(-50%) scale(1);
+            }
+        }
+
+        @keyframes blinkLeft {
+
+            0%,
+            95%,
+            97% {
+                transform: scaleY(1);
+            }
+
+            96%,
+            98% {
+                transform: scaleY(0.1);
+            }
+        }
+
+        @keyframes blinkRight {
+
+            0%,
+            92%,
+            94% {
+                transform: scaleY(1);
+            }
+
+            93%,
+            95% {
+                transform: scaleY(0.1);
+            }
+        }
+
+        @keyframes lookAround {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            25% {
+                transform: translate(2px, 2px);
+            }
+
+            50% {
+                transform: translate(-2px, 1px);
+            }
+
+            75% {
+                transform: translate(1px, -2px);
+            }
+        }
+
+        @keyframes tongueMove {
+
+            0%,
+            100% {
+                transform: translateX(-50%) scaleY(0.5);
+            }
+
+            50% {
+                transform: translateX(-50%) scaleY(1);
+            }
+        }
+
+        @keyframes visionPulse {
+            0% {
+                opacity: 0.6;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+
+            25% {
+                transform: translateX(-50%) rotate(-1deg);
+            }
+
+            75% {
+                transform: translateX(-50%) rotate(1deg);
+            }
+        }
+
+        @keyframes float-z {
+            0% {
+                transform: translateY(0) rotate(0);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(5deg);
+            }
+
+            100% {
+                transform: translateY(0) rotate(0);
+            }
         }
 
         @keyframes flicker {
@@ -772,33 +769,68 @@
                     const tileHeight = 40;
                     const tileCount = Math.ceil(pathHeight / tileHeight);
 
+                    // Создаем плитки пола в виде шахматной доски для лучшей видимости движения
                     for (let i = 0; i < tileCount; i++) {
                         const tile = document.createElement('div');
                         tile.className = 'path-tile';
                         tile.style.bottom = (i * tileHeight) + 'px';
+
+                        // Чередуем два оттенка для создания эффекта плитки
+                        const isDarkTile = i % 2 === 0;
+                        tile.style.backgroundColor = isDarkTile ? 'rgba(50, 35, 25, 0.8)' : 'rgba(60, 45, 35, 0.8)';
+
+                        // Добавляем простую рамку для лучшего эффекта
+                        tile.style.borderTop = '1px solid rgba(255, 255, 255, 0.1)';
+
                         gamePath.appendChild(tile);
                     }
 
-                    const torchPositions = [200, 400, 600];
-                    torchPositions.forEach((pos) => {
-                        // Left torch
-                        const leftTorch = document.createElement('div');
-                        leftTorch.className = 'torch';
-                        leftTorch.style.position = 'absolute';
-                        leftTorch.style.left = '-40px';
-                        leftTorch.style.bottom = (pathHeight - pos) + 'px'; // Convert top position to bottom position
+                    // Более простое размещение свечей - по 3 с каждой стороны
+                    const torchPositions = [0.2, 0.5, 0.8]; // относительные позиции (от 0 до 1)
 
-                        // Right torch
-                        const rightTorch = document.createElement('div');
-                        rightTorch.className = 'torch';
-                        rightTorch.style.position = 'absolute';
-                        rightTorch.style.right = '-40px';
-                        rightTorch.style.bottom = (pathHeight - pos) + 'px'; // Convert top position to bottom position
+                    // Размещаем свечи на обеих сторонах дорожки
+                    torchPositions.forEach(position => {
+                        // Вычисляем абсолютную позицию на основе высоты пути
+                        const torchPosition = pathHeight * position;
 
-                        gamePath.appendChild(leftTorch);
-                        gamePath.appendChild(rightTorch);
+                        // Создаем левую свечу
+                        createSimpleTorch('left', torchPosition);
+
+                        // Создаем правую свечу
+                        createSimpleTorch('right', torchPosition);
                     });
 
+                    // Упрощенная функция создания свечи
+                    function createSimpleTorch(side, position) {
+                        const torch = document.createElement('div');
+                        torch.className = 'torch';
+
+                        // Размещаем свечу с одной из сторон дорожки
+                        if (side === 'left') {
+                            torch.style.left = '-30px';
+                        } else {
+                            torch.style.right = '-30px';
+                        }
+
+                        torch.style.bottom = position + 'px';
+
+                        // Создаем свет от свечи
+
+
+                        gamePath.appendChild(torch);
+                    }
+
+                    // Добавляем стиль для анимации мерцания света
+                    const styleElement = document.createElement('style');
+                    styleElement.textContent = `
+        @keyframes flicker {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            25% { opacity: 0.6; transform: scale(0.98); }
+            50% { opacity: 0.7; transform: scale(1.02); }
+            75% { opacity: 0.6; transform: scale(0.95); }
+        }
+    `;
+                    document.head.appendChild(styleElement);
                 });
             </script>
 
@@ -806,28 +838,30 @@
                 <div id="progress"></div>
             </div>
 
-            <div id="monster">
-                <div class="monster-eye monster-eye-left">
-                    <div class="monster-pupil"></div>
-                </div>
-                <div class="monster-eye monster-eye-right">
-                    <div class="monster-pupil"></div>
-                </div>
-                <div class="monster-mouth">
-                    <div class="monster-teeth">
-                        <div class="monster-tooth"></div>
-                        <div class="monster-tooth"></div>
-                        <div class="monster-tooth"></div>
-                        <div class="monster-tooth"></div>
-                        <div class="monster-tooth"></div>
-                    </div>
-                    <div class="monster-tongue"></div>
-                </div>
+            <div id="monster-container">
                 <div id="monster-vision"></div>
-                <div id="monster-sleep-text">
-                    <span class="z-letter z1">Z</span>
-                    <span class="z-letter z2">z</span>
-                    <span class="z-letter z3">z</span>
+                <div id="monster">
+                    <div class="monster-eye monster-eye-left">
+                        <div class="monster-pupil"></div>
+                    </div>
+                    <div class="monster-eye monster-eye-right">
+                        <div class="monster-pupil"></div>
+                    </div>
+                    <div class="monster-mouth">
+                        <div class="monster-teeth">
+                            <div class="monster-tooth"></div>
+                            <div class="monster-tooth"></div>
+                            <div class="monster-tooth"></div>
+                            <div class="monster-tooth"></div>
+                            <div class="monster-tooth"></div>
+                        </div>
+                        <div class="monster-tongue"></div>
+                    </div>
+                    <div id="monster-sleep-text">
+                        <span class="z-letter z1">Z</span>
+                        <span class="z-letter z2">z</span>
+                        <span class="z-letter z3">z</span>
+                    </div>
                 </div>
             </div>
 
@@ -922,595 +956,963 @@
         </div>
     </div>
     <script>
-        // Game variables
-        let gameState = {
-            level: 1,
-            score: 0,
-            coins: 0,
-            stepsNeeded: 10,
-            currentSteps: 0,
-            monsterAwake: false,
-            paused: false,
-            gameOver: false,
-            soundEnabled: true,
-            difficulty: 'normal',
-            monsterPatterns: [
-                { sleepTime: 3000, awakeTime: 1500 },  // Level 1
-                { sleepTime: 2500, awakeTime: 1800 },  // Level 2
-                { sleepTime: 2000, awakeTime: 2000 },  // Level 3
-                { sleepTime: 1500, awakeTime: 2200 },  // Level 4
-                { sleepTime: 1000, awakeTime: 2500 }   // Level 5
-            ],
-            backgrounds: [
-                '#332255',  // Level 1 - Deep purple
-                '#553322',  // Level 2 - Brown
-                '#225533',  // Level 3 - Teal
-                '#552233',  // Level 4 - Burgundy
-                '#335522'   // Level 5 - Olive green
-            ],
-            monsters: [
-                '#ff0000',  // Level 1 - Red
-                '#ff6600',  // Level 2 - Orange
-                '#cc00ff',  // Level 3 - Purple
-                '#00ccff',  // Level 4 - Blue
-                '#ffcc00'   // Level 5 - Yellow
-            ],
-            levelDescriptions: [
-                "Sneak past the sleeping guardian!",
-                "This monster is more alert. Be careful!",
-                "Halfway there! This one has keen senses.",
-                "Almost there! This guardian rarely sleeps.",
-                "Final challenge! The ultimate guardian never truly sleeps."
-            ]
-        };
+        /**
+ * Monster Runner Game
+ * Оптимизированная версия игры с улучшенными анимациями для мобильных устройств
+ */
 
-        // DOM elements
-        const gameArea = document.getElementById('game-area');
-        const progressBar = document.getElementById('progress');
-        const monster = document.getElementById('monster');
-        const monsterEyes = document.querySelectorAll('.monster-pupil');
-        const monsterMouth = document.querySelector('.monster-mouth');
-        const player = document.getElementById('player');
-        const playerFeetLeft = document.querySelector('.player-foot-left');
-        const playerFeetRight = document.querySelector('.player-foot-right');
-        const actionButton = document.getElementById('action-button');
-        const scoreElement = document.getElementById('score');
-        const coinsElement = document.getElementById('coins');
-        const levelElement = document.getElementById('level');
-        const restartButton = document.getElementById('restart');
-        const pauseButton = document.getElementById('pause');
-        const settingsButton = document.getElementById('settings');
-        const helpButton = document.getElementById('help');
-        const levelInfo = document.getElementById('level-info');
-        const levelNumber = document.getElementById('level-number');
-        const levelDesc = document.getElementById('level-desc');
-        const gameOverScreen = document.getElementById('game-over');
-        const finalScoreElement = document.getElementById('final-score');
-        const restartGameButton = document.getElementById('restart-button');
-        const monsterVision = document.getElementById('monster-vision');
-        const monsterSleepText = document.getElementById('monster-sleep-text');
-        const settingsModal = document.getElementById('settings-modal');
-        const helpModal = document.getElementById('help-modal');
-        const soundToggle = document.getElementById('sound-toggle');
-        const difficultySelect = document.getElementById('difficulty');
-        const saveSettingsButton = document.getElementById('save-settings');
+        // ======= Анимационный движок =======
+        class AnimationEngine {
+            constructor() {
+                this.animations = new Map();
+                this.nextId = 1;
+            }
 
-        // Monster behavior timer
-        let monsterTimer;
-        let stepCount = 0;
+            /**
+             * Создаёт плавную анимацию дрожания элемента
+             * @param {HTMLElement} element - Элемент для анимации
+             * @param {Object} options - Параметры анимации
+             * @return {Object} - Контроллер анимации
+             */
+            shake(element, options = {}) {
+                // Настройки по умолчанию
+                const settings = {
+                    intensity: options.intensity || 1,  // Интенсивность дрожания
+                    frequency: options.frequency || 0.1, // Частота колебаний
+                    duration: options.duration || null,  // Длительность (null = бесконечно)
+                    baseTransform: options.baseTransform || 'translateX(-50%)', // Начальная трансформация
+                    axis: options.axis || 'rotate',  // Тип анимации ('rotate', 'translateX', 'translateY')
+                    onComplete: options.onComplete || null // Колбэк по завершении
+                };
 
-        // Modals management
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.classList.add('show');
-            gameState.paused = true;
-        }
+                // Остановить существующие анимации для элемента
+                this.stop(element);
 
-        function closeAllModals() {
-            const modals = document.querySelectorAll('.modal');
-            modals.forEach(modal => {
-                modal.classList.remove('show');
-            });
-            if (!gameState.gameOver) {
-                gameState.paused = false;
+                // Сохраняем исходные стили
+                const originalStyles = {
+                    transform: element.style.transform || '',
+                    transition: element.style.transition || '',
+                    animation: element.style.animation || ''
+                };
+
+                // Отключаем CSS анимации
+                element.style.animation = 'none';
+                element.style.transition = 'none';
+
+                // Переменные для анимации
+                const startTime = performance.now();
+                let lastFrameTime = startTime;
+                let animationId = null;
+
+                // Функция обновления кадра анимации
+                const updateFrame = (currentTime) => {
+                    // Получаем временной интервал для плавности анимации
+                    const deltaTime = currentTime - lastFrameTime;
+                    lastFrameTime = currentTime;
+                    const elapsed = currentTime - startTime;
+
+                    // Расчет значения для более естественного движения
+                    const phase = elapsed * settings.frequency;
+                    const amplitude = Math.sin(phase) * settings.intensity;
+
+                    // Применяем трансформацию в зависимости от типа оси
+                    let transform = settings.baseTransform;
+                    switch (settings.axis) {
+                        case 'rotate':
+                            transform += ` rotate(${amplitude}deg)`;
+                            break;
+                        case 'translateX':
+                            transform += ` translateX(${amplitude}px)`;
+                            break;
+                        case 'translateY':
+                            transform += ` translateY(${amplitude}px)`;
+                            break;
+                    }
+                    element.style.transform = transform;
+
+                    // Проверяем, не истекло ли время анимации
+                    if (settings.duration && elapsed >= settings.duration) {
+                        this.stop(element);
+                        element.style.transform = settings.baseTransform;
+                        if (typeof settings.onComplete === 'function') {
+                            settings.onComplete();
+                        }
+                        return;
+                    }
+
+                    // Запрашиваем следующий кадр
+                    animationId = requestAnimationFrame(updateFrame);
+                };
+
+                // Создаем уникальный ID и контроллер анимации
+                const id = this._generateId();
+                const controller = {
+                    id,
+                    originalStyles,
+                    element,
+                    stop: () => this.stop(element)
+                };
+
+                // Сохраняем контроллер и запускаем анимацию
+                this.animations.set(element, controller);
+                animationId = requestAnimationFrame(updateFrame);
+
+                return controller;
+            }
+
+            /**
+             * Создает анимацию пульсации элемента
+             * @param {HTMLElement} element - Элемент для анимации
+             * @param {Object} options - Параметры анимации
+             * @return {Object} - Контроллер анимации
+             */
+            pulse(element, options = {}) {
+                const settings = {
+                    minScale: options.minScale || 0.95,
+                    maxScale: options.maxScale || 1.05,
+                    duration: options.duration || null,
+                    interval: options.interval || 1000,
+                    baseTransform: options.baseTransform || 'translateX(-50%)',
+                    onComplete: options.onComplete || null
+                };
+
+                this.stop(element);
+
+                const originalStyles = {
+                    transform: element.style.transform || '',
+                    transition: element.style.transition || '',
+                    animation: element.style.animation || ''
+                };
+
+                element.style.animation = 'none';
+                element.style.transition = 'none';
+
+                const startTime = performance.now();
+                let direction = 1; // 1 = увеличение, -1 = уменьшение
+                let currentScale = 1;
+                let animationId = null;
+
+                const updateFrame = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const phase = (elapsed % settings.interval) / settings.interval;
+
+                    // Плавное изменение масштаба с использованием синусоиды
+                    currentScale = settings.minScale + (settings.maxScale - settings.minScale) *
+                        (Math.sin(phase * Math.PI * 2 - Math.PI / 2) + 1) / 2;
+
+                    element.style.transform = `${settings.baseTransform} scale(${currentScale})`;
+
+                    // Проверяем, не истекло ли время анимации
+                    if (settings.duration && elapsed >= settings.duration) {
+                        this.stop(element);
+                        element.style.transform = settings.baseTransform;
+                        if (typeof settings.onComplete === 'function') {
+                            settings.onComplete();
+                        }
+                        return;
+                    }
+
+                    animationId = requestAnimationFrame(updateFrame);
+                };
+
+                const id = this._generateId();
+                const controller = {
+                    id,
+                    originalStyles,
+                    element,
+                    stop: () => this.stop(element)
+                };
+
+                this.animations.set(element, controller);
+                animationId = requestAnimationFrame(updateFrame);
+
+                return controller;
+            }
+
+            /**
+             * Останавливает анимацию для элемента
+             * @param {HTMLElement} element - Элемент
+             */
+            stop(element) {
+                if (this.animations.has(element)) {
+                    const controller = this.animations.get(element);
+
+                    // Восстанавливаем оригинальные стили
+                    element.style.animation = controller.originalStyles.animation;
+                    element.style.transition = controller.originalStyles.transition;
+
+                    this.animations.delete(element);
+                }
+            }
+
+            /**
+             * Останавливает все анимации
+             */
+            stopAll() {
+                this.animations.forEach((controller, element) => {
+                    this.stop(element);
+                });
+            }
+
+            /**
+             * Генерирует уникальный ID для анимации
+             * @private
+             * @return {number} Уникальный ID
+             */
+            _generateId() {
+                return this.nextId++;
             }
         }
 
-        // Initialize the game
-        function initGame() {
-            gameState.level = 1;
-            gameState.score = 0;
-            gameState.coins = 0;
-            gameState.stepsNeeded = 10;
-            gameState.currentSteps = 0;
-            gameState.monsterAwake = false;
-            gameState.paused = false;
-            gameState.gameOver = false;
+        /**
+         * Класс управления игрой Monster Runner
+         */
+        class MonsterRunnerGame {
+            constructor() {
+                // Состояние игры
+                this.state = {
+                    level: 1,
+                    score: 0,
+                    coins: 0,
+                    stepsNeeded: 10,
+                    currentSteps: 0,
+                    monsterAwake: false,
+                    paused: false,
+                    gameOver: false,
+                    soundEnabled: true,
+                    difficulty: 'normal',
+                    monsterPatterns: [
+                        { sleepTime: 3000, awakeTime: 1500 },  // Level 1
+                        { sleepTime: 2500, awakeTime: 1800 },  // Level 2
+                        { sleepTime: 2000, awakeTime: 2000 },  // Level 3
+                        { sleepTime: 1500, awakeTime: 2200 },  // Level 4
+                        { sleepTime: 1000, awakeTime: 2500 }   // Level 5
+                    ],
+                    backgrounds: [
+                        '#332255',  // Level 1 - Deep purple
+                        '#553322',  // Level 2 - Brown
+                        '#225533',  // Level 3 - Teal
+                        '#552233',  // Level 4 - Burgundy
+                        '#335522'   // Level 5 - Olive green
+                    ],
+                    monsters: [
+                        '#ff0000',  // Level 1 - Red
+                        '#ff6600',  // Level 2 - Orange
+                        '#cc00ff',  // Level 3 - Purple
+                        '#00ccff',  // Level 4 - Blue
+                        '#ffcc00'   // Level 5 - Yellow
+                    ],
+                    levelDescriptions: [
+                        "Sneak past the sleeping guardian!",
+                        "This monster is more alert. Be careful!",
+                        "Halfway there! This one has keen senses.",
+                        "Almost there! This guardian rarely sleeps.",
+                        "Final challenge! The ultimate guardian never truly sleeps."
+                    ]
+                };
 
-            updateUI();
-            startMonsterBehavior();
-            showLevelInfo();
+                // Таймеры и анимации
+                this.monsterTimer = null;
+                this.stepCount = 0;
+                this.activeAnimations = {};
 
-            // Initialize environment based on level
-            updateEnvironment();
-        }
+                // Инициализация движка анимаций
+                this.animationEngine = new AnimationEngine();
+            }
 
-        // Update environment based on level
-        function updateEnvironment() {
-            // Update path color based on level
-            const levelIndex = Math.min(gameState.level - 1, gameState.backgrounds.length - 1);
-            const pathTiles = document.querySelectorAll('.path-tile');
+            /**
+             * Инициализация игры
+             */
+            init() {
+                // Получение DOM элементов
+                this.elements = {
+                    gameArea: document.getElementById('game-area'),
+                    progressBar: document.getElementById('progress'),
+                    monster: document.getElementById('monster'),
+                    monsterContainer: document.getElementById('monster-container'),
+                    monsterEyes: document.querySelectorAll('.monster-pupil'),
+                    monsterMouth: document.querySelector('.monster-mouth'),
+                    player: document.getElementById('player'),
+                    playerFeetLeft: document.querySelector('.player-foot-left'),
+                    playerFeetRight: document.querySelector('.player-foot-right'),
+                    actionButton: document.getElementById('action-button'),
+                    scoreElement: document.getElementById('score'),
+                    coinsElement: document.getElementById('coins'),
+                    levelElement: document.getElementById('level'),
+                    restartButton: document.getElementById('restart'),
+                    pauseButton: document.getElementById('pause'),
+                    settingsButton: document.getElementById('settings'),
+                    helpButton: document.getElementById('help'),
+                    levelInfo: document.getElementById('level-info'),
+                    levelNumber: document.getElementById('level-number'),
+                    levelDesc: document.getElementById('level-desc'),
+                    gameOverScreen: document.getElementById('game-over'),
+                    finalScoreElement: document.getElementById('final-score'),
+                    restartGameButton: document.getElementById('restart-button'),
+                    monsterVision: document.getElementById('monster-vision'),
+                    monsterSleepText: document.getElementById('monster-sleep-text'),
+                    settingsModal: document.getElementById('settings-modal'),
+                    helpModal: document.getElementById('help-modal'),
+                    soundToggle: document.getElementById('sound-toggle'),
+                    difficultySelect: document.getElementById('difficulty'),
+                    saveSettingsButton: document.getElementById('save-settings')
+                };
 
-            pathTiles.forEach(tile => {
+                // Привязка обработчиков событий
+                this._bindEvents();
+
+                // Инициализация состояния игры
+                this._resetGameState();
+                this._updateUI();
+                this._startMonsterBehavior();
+                this._showLevelInfo();
+                this._updateEnvironment();
+            }
+
+            /**
+             * Привязка обработчиков событий
+             * @private
+             */
+            _bindEvents() {
+                // Основные элементы управления
+                this.elements.actionButton.addEventListener('click', () => this._playerStep());
+                this.elements.restartButton.addEventListener('click', () => this._restartGame());
+                this.elements.pauseButton.addEventListener('click', () => this._togglePause());
+                this.elements.restartGameButton.addEventListener('click', () => this._restartGame());
+                this.elements.settingsButton.addEventListener('click', () => this._openModal('settings-modal'));
+                this.elements.helpButton.addEventListener('click', () => this._openModal('help-modal'));
+                this.elements.saveSettingsButton.addEventListener('click', () => this._saveSettings());
+
+                // Закрытие модальных окон
+                document.querySelectorAll('[data-close-modal]').forEach(button => {
+                    button.addEventListener('click', () => this._closeAllModals());
+                });
+
+                // Оптимизация для мобильных устройств
+                this.elements.actionButton.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this._playerStep();
+                });
+            }
+
+            /**
+             * Сброс состояния игры
+             * @private
+             */
+            _resetGameState() {
+                this.state.level = 1;
+                this.state.score = 0;
+                this.state.coins = 0;
+                this.state.stepsNeeded = 10;
+                this.state.currentSteps = 0;
+                this.state.monsterAwake = false;
+                this.state.paused = false;
+                this.state.gameOver = false;
+            }
+
+            /**
+             * Обновление UI элементов игры
+             * @private
+             */
+            _updateUI() {
+                // Обновление статистики
+                this.elements.scoreElement.textContent = this.state.score;
+                this.elements.coinsElement.textContent = this.state.coins;
+                this.elements.levelElement.textContent = this.state.level;
+
+                // Обновление прогрессбара
+                const progressPercentage = (this.state.currentSteps / this.state.stepsNeeded) * 100;
+                this.elements.progressBar.style.height = `${progressPercentage}%`;
+
+                // Обновление визуальных стилей уровня
+                const levelIndex = Math.min(this.state.level - 1, this.state.backgrounds.length - 1);
+                this.elements.gameArea.style.backgroundColor = this.state.backgrounds[levelIndex];
+                this.elements.monster.style.backgroundColor = this.state.monsters[levelIndex];
+            }
+
+            /**
+             * Обновление элементов окружения в соответствии с текущим уровнем
+             * @private
+             */
+            _updateEnvironment() {
+                // Обновление стиля дорожки в зависимости от уровня
+                const levelIndex = Math.min(this.state.level - 1, this.state.backgrounds.length - 1);
+                const pathTiles = document.querySelectorAll('.path-tile');
+
+                let tileStyle;
                 switch (levelIndex) {
                     case 0: // Level 1
-                        tile.style.background = 'repeating-linear-gradient(90deg, rgba(60, 40, 30, 0.8), rgba(70, 50, 40, 0.8) 20px)';
+                        tileStyle = 'repeating-linear-gradient(90deg, rgba(60, 40, 30, 0.8), rgba(70, 50, 40, 0.8) 20px)';
                         break;
                     case 1: // Level 2
-                        tile.style.background = 'repeating-linear-gradient(90deg, rgba(50, 40, 70, 0.8), rgba(60, 50, 80, 0.8) 20px)';
+                        tileStyle = 'repeating-linear-gradient(90deg, rgba(50, 40, 70, 0.8), rgba(60, 50, 80, 0.8) 20px)';
                         break;
                     case 2: // Level 3
-                        tile.style.background = 'repeating-linear-gradient(90deg, rgba(40, 60, 50, 0.8), rgba(50, 70, 60, 0.8) 20px)';
+                        tileStyle = 'repeating-linear-gradient(90deg, rgba(40, 60, 50, 0.8), rgba(50, 70, 60, 0.8) 20px)';
                         break;
                     case 3: // Level 4
-                        tile.style.background = 'repeating-linear-gradient(90deg, rgba(65, 35, 45, 0.8), rgba(75, 45, 55, 0.8) 20px)';
+                        tileStyle = 'repeating-linear-gradient(90deg, rgba(65, 35, 45, 0.8), rgba(75, 45, 55, 0.8) 20px)';
                         break;
                     case 4: // Level 5
-                        tile.style.background = 'repeating-linear-gradient(90deg, rgba(50, 60, 30, 0.8), rgba(60, 70, 40, 0.8) 20px)';
+                        tileStyle = 'repeating-linear-gradient(90deg, rgba(50, 60, 30, 0.8), rgba(60, 70, 40, 0.8) 20px)';
                         break;
                 }
-            });
-        }
 
-        // Update UI elements
-        function updateUI() {
-            // Update stats
-            scoreElement.textContent = gameState.score;
-            coinsElement.textContent = gameState.coins;
-            levelElement.textContent = gameState.level;
-
-            // Update progress bar
-            const progressPercentage = (gameState.currentSteps / gameState.stepsNeeded) * 100;
-            progressBar.style.height = `${progressPercentage}%`;
-
-            // Update level visuals
-            const levelIndex = Math.min(gameState.level - 1, gameState.backgrounds.length - 1);
-            gameArea.style.backgroundColor = gameState.backgrounds[levelIndex];
-            monster.style.backgroundColor = gameState.monsters[levelIndex];
-        }
-
-        // Функция для активации режима страха
-        function showFear(duration = 3000) {
-            const player = document.getElementById('player');
-
-            // Добавляем капли пота, если их еще нет
-            if (!document.querySelector('.sweat-drop')) {
-                const sweatDropLeft = document.createElement('div');
-                sweatDropLeft.className = 'sweat-drop sweat-drop-left';
-
-                const sweatDropRight = document.createElement('div');
-                sweatDropRight.className = 'sweat-drop sweat-drop-right';
-
-                player.querySelector('.player-head').appendChild(sweatDropLeft);
-                player.querySelector('.player-head').appendChild(sweatDropRight);
+                pathTiles.forEach(tile => {
+                    tile.style.background = tileStyle;
+                });
             }
 
-            // Добавляем класс для испуганного вида
-            player.classList.add('scared');
-
-            // Возвращаем нормальное выражение через указанное время
-            if (duration) {
-                setTimeout(() => {
-                    player.classList.remove('scared');
-                }, duration);
-            }
-
-            return {
-                stopFear: function () {
-                    player.classList.remove('scared');
+            /**
+             * Запуск поведения монстра
+             * @private
+             */
+            _startMonsterBehavior() {
+                // Остановка существующего таймера
+                if (this.monsterTimer) {
+                    clearInterval(this.monsterTimer);
                 }
-            };
-        }
 
-        // Start monster behavior pattern
-        function startMonsterBehavior() {
-            if (monsterTimer) clearInterval(monsterTimer);
+                // Получение паттерна поведения монстра в зависимости от уровня
+                const levelIndex = Math.min(this.state.level - 1, this.state.monsterPatterns.length - 1);
+                let pattern = { ...this.state.monsterPatterns[levelIndex] };
 
-            const levelIndex = Math.min(gameState.level - 1, gameState.monsterPatterns.length - 1);
-            let pattern = gameState.monsterPatterns[levelIndex];
+                // Корректировка тайминга в зависимости от сложности
+                if (this.state.difficulty === 'easy') {
+                    pattern.sleepTime *= 1.3;
+                    pattern.awakeTime *= 0.7;
+                } else if (this.state.difficulty === 'hard') {
+                    pattern.sleepTime *= 0.7;
+                    pattern.awakeTime *= 1.3;
+                }
 
-            // Adjust timing based on difficulty
-            if (gameState.difficulty === 'easy') {
-                pattern = {
-                    sleepTime: pattern.sleepTime * 1.3,
-                    awakeTime: pattern.awakeTime * 0.7
-                };
-            } else if (gameState.difficulty === 'hard') {
-                pattern = {
-                    sleepTime: pattern.sleepTime * 0.7,
-                    awakeTime: pattern.awakeTime * 1.3
-                };
+                // Запуск цикла поведения
+                this.monsterTimer = setInterval(() => {
+                    if (this.state.paused || this.state.gameOver) return;
+
+                    if (this.state.monsterAwake) {
+                        // Монстр засыпает
+                        this.state.monsterAwake = false;
+                        this._monsterSleep();
+
+                        setTimeout(() => {
+                            if (!this.state.paused && !this.state.gameOver) {
+                                // Монстр просыпается
+                                this.state.monsterAwake = true;
+                                this._monsterWake();
+                            }
+                        }, pattern.sleepTime);
+                    }
+                }, pattern.sleepTime + pattern.awakeTime);
+
+                // Начинаем со спящего монстра
+                this.state.monsterAwake = false;
+                this._monsterSleep();
+
+                setTimeout(() => {
+                    if (!this.state.paused && !this.state.gameOver) {
+                        this.state.monsterAwake = true;
+                        this._monsterWake();
+                    }
+                }, pattern.sleepTime);
             }
 
-            monsterTimer = setInterval(() => {
-                if (gameState.paused || gameState.gameOver) return;
+            /**
+             * Анимация спящего монстра
+             * @private
+             */
+            _monsterSleep() {
+                // Остановка всех активных анимаций монстра
+                if (this.activeAnimations.monsterShaking) {
+                    this.activeAnimations.monsterShaking.stop();
+                    delete this.activeAnimations.monsterShaking;
+                }
+                if (this.activeAnimations.monsterPulsing) {
+                    this.activeAnimations.monsterPulsing.stop();
+                    delete this.activeAnimations.monsterPulsing;
+                }
 
-                if (gameState.monsterAwake) {
-                    // Monster going to sleep
-                    gameState.monsterAwake = false;
-                    monsterSleep();
+                // Анимация пульсации спящего монстра
+                this.activeAnimations.monsterPulsing = this.animationEngine.pulse(this.elements.monsterContainer, {
+                    minScale: 0.98,
+                    maxScale: 1.02,
+                    interval: 2000,
+                    baseTransform: 'translateX(-50%)'
+                });
 
+                // Визуальные эффекты
+                this.elements.monster.style.filter = 'brightness(0.7)';
+
+                // Глаза закрываются
+                this.elements.monsterEyes.forEach(eye => {
+                    eye.style.animation = 'none';
+                    eye.style.transform = 'scaleY(0.1)';
+                });
+
+                // Рот расслабляется
+                this.elements.monsterMouth.style.height = '2px';
+                this.elements.monsterMouth.style.width = '20px';
+                this.elements.monsterMouth.style.backgroundColor = '#222';
+
+                // Скрыть зубы и язык
+                document.querySelector('.monster-teeth').style.display = 'none';
+                document.querySelector('.monster-tongue').style.display = 'none';
+
+                // Отключаем обзор монстра и отображаем zZZ
+                this.elements.monsterVision.style.display = 'none';
+                this.elements.monsterSleepText.style.opacity = '1';
+
+                // Убираем страх с игрока
+                this._stopFear();
+
+                // Воспроизведение звука если включено
+                if (this.state.soundEnabled) {
+                    // this._playSound('sleep');
+                }
+            }
+
+            /**
+             * Анимация просыпающегося монстра
+             * @private
+             */
+            _monsterWake() {
+                // Остановка всех активных анимаций монстра
+                if (this.activeAnimations.monsterPulsing) {
+                    this.activeAnimations.monsterPulsing.stop();
+                    delete this.activeAnimations.monsterPulsing;
+                }
+
+                // Анимация дыхания активного монстра
+                this.elements.monster.style.animation = 'monsterBreathing 2s infinite';
+                this.elements.monster.style.transform = 'translateX(-50%) scale(1.2)';
+                this.elements.monster.style.filter = 'brightness(1.2)';
+
+                // Глаза открываются широко
+                this.elements.monsterEyes.forEach((eye, index) => {
+                    eye.style.animation = index === 0 ? 'blinkLeft 8s infinite' : 'blinkRight 8s infinite';
+                    eye.style.transform = 'scale(1.2)';
+                });
+
+                // Зрачки быстро осматриваются
+                document.querySelectorAll('.monster-pupil').forEach(pupil => {
+                    pupil.style.animation = 'lookAround 2s infinite';
+                });
+
+                // Рот открывается, показывая зубы и язык
+                this.elements.monsterMouth.style.height = '15px';
+                this.elements.monsterMouth.style.width = '40px';
+                this.elements.monsterMouth.style.borderRadius = '10px 10px 20px 20px';
+                this.elements.monsterMouth.style.backgroundColor = '#333';
+
+                document.querySelector('.monster-teeth').style.display = 'flex';
+                document.querySelector('.monster-tongue').style.display = 'block';
+
+                // Активация обзора монстра и скрытие zZZ
+                this.elements.monsterVision.style.display = 'block';
+                this.elements.monsterVision.style.animation = 'visionPulse 2s infinite alternate';
+                this.elements.monsterSleepText.style.opacity = '0';
+
+                // Вызываем страх у игрока
+                this._showFear();
+
+                // Добавляем дрожание монстру для усиления эффекта
+                this.activeAnimations.monsterShaking = this.animationEngine.shake(this.elements.monsterContainer, {
+                    intensity: 1,
+                    frequency: 0.15,
+                    duration: 2000,
+                    baseTransform: 'translateX(-50%)'
+                });
+
+                // Воспроизведение звука пробуждения
+                if (this.state.soundEnabled) {
+                    // this._playSound('wake');
+                }
+            }
+
+            /**
+             * Активирует режим страха у игрока
+             * @param {number} duration - Длительность страха в мс
+             * @private
+             */
+            _showFear(duration = 3000) {
+                // Добавление капель пота
+                if (!document.querySelector('.sweat-drop')) {
+                    const playerHead = this.elements.player.querySelector('.player-head');
+
+                    const sweatLeft = document.createElement('div');
+                    sweatLeft.className = 'sweat-drop sweat-drop-left';
+
+                    const sweatRight = document.createElement('div');
+                    sweatRight.className = 'sweat-drop sweat-drop-right';
+
+                    playerHead.appendChild(sweatLeft);
+                    playerHead.appendChild(sweatRight);
+                }
+
+                // Делаем капли пота видимыми
+                const sweats = this.elements.player.querySelectorAll('.sweat-drop');
+                sweats.forEach(drop => {
+                    drop.style.opacity = '1';
+                    drop.style.transform = drop.classList.contains('sweat-drop-left') ?
+                        'translateY(15px) rotate(-15deg)' : 'translateY(15px) rotate(15deg)';
+                });
+
+                // Анимация дрожания игрока
+                this.activeAnimations.playerShaking = this.animationEngine.shake(this.elements.player, {
+                    intensity: 2.5,
+                    frequency: 0.2,
+                    duration: duration,
+                    baseTransform: 'translateX(-50%)',
+                    onComplete: () => this._stopFear()
+                });
+            }
+
+            /**
+             * Отключает режим страха у игрока
+             * @private
+             */
+            _stopFear() {
+                if (this.activeAnimations.playerShaking) {
+                    this.activeAnimations.playerShaking.stop();
+                    delete this.activeAnimations.playerShaking;
+                }
+
+                // Скрываем капли пота
+                const sweats = this.elements.player.querySelectorAll('.sweat-drop');
+                sweats.forEach(drop => {
+                    drop.style.opacity = '0';
+                    drop.style.transform = '';
+                });
+            }
+
+            /**
+             * Шаг игрока вперед
+             * @private
+             */
+            _playerStep() {
+                if (this.state.paused || this.state.gameOver) return;
+
+                if (this.state.monsterAwake) {
+                    // Игрок был пойман
+                    this._endGame();
+                    return;
+                }
+
+                // Успешный шаг
+                this.state.currentSteps++;
+
+                // Перемещение игрока ближе к монстру
+                const progressPercentage = this.state.currentSteps / this.state.stepsNeeded;
+                this.elements.player.style.bottom = `${150 - (progressPercentage * 100)}px`;
+
+                // Визуальная обратная связь
+                this.elements.player.style.transform = 'translateX(-50%) scale(1.1)';
+                this._animateStep();
+                this._addPoints(Math.floor(Math.random() * 10) + 1);
+
+                setTimeout(() => {
+                    this.elements.player.style.transform = 'translateX(-50%) scale(1)';
+                }, 100);
+
+                this._updateUI();
+
+                // Проверка завершения уровня
+                if (this.state.currentSteps >= this.state.stepsNeeded) {
+                    this._completeLevel();
+                }
+            }
+
+            /**
+             * Анимация шага игрока
+             * @private
+             */
+            _animateStep() {
+                this.stepCount++;
+
+                if (this.stepCount % 2 === 0) {
+                    this.elements.playerFeetLeft.style.transform = 'rotate(-20deg)';
+                    this.elements.playerFeetRight.style.transform = 'rotate(0deg)';
+                } else {
+                    this.elements.playerFeetLeft.style.transform = 'rotate(0deg)';
+                    this.elements.playerFeetRight.style.transform = 'rotate(20deg)';
+                }
+
+                // Звук шага
+                if (this.state.soundEnabled) {
+                    // this._playSound('step');
+                }
+            }
+
+            /**
+             * Добавление очков с анимацией
+             * @param {number} amount - Количество очков
+             * @param {HTMLElement} sourceElement - Исходный элемент для анимации
+             * @private
+             */
+            _addPoints(amount, sourceElement = null) {
+                const pointsElement = document.createElement('div');
+                pointsElement.className = 'points';
+                pointsElement.textContent = '+' + amount;
+
+                if (sourceElement) {
+                    const rect = sourceElement.getBoundingClientRect();
+                    pointsElement.style.left = (rect.left + rect.width / 2) + 'px';
+                    pointsElement.style.top = rect.top + 'px';
+                } else {
+                    pointsElement.style.left = (Math.random() * (window.innerWidth - 100) + 50) + 'px';
+                    pointsElement.style.top = (Math.random() * (window.innerHeight / 2) + 200) + 'px';
+                }
+
+                document.body.appendChild(pointsElement);
+
+                // Анимация
+                setTimeout(() => {
+                    pointsElement.style.opacity = '1';
+                    pointsElement.style.transform = 'translateY(-50px)';
+                }, 10);
+
+                setTimeout(() => {
+                    pointsElement.style.opacity = '0';
+                }, 800);
+
+                setTimeout(() => {
+                    pointsElement.remove();
+                }, 1000);
+
+                // Обновление счета
+                this.state.score += amount;
+                this._updateUI();
+            }
+
+            /**
+             * Завершение текущего уровня
+             * @private
+             */
+            _completeLevel() {
+                clearInterval(this.monsterTimer);
+                this.elements.monsterSleepText.style.opacity = '0';
+                this.state.paused = true;
+
+                // Анимация побежденного монстра
+                this.elements.monster.style.transform = 'translateX(-50%) scale(0.8) rotate(180deg)';
+                this.elements.monster.style.opacity = '0.5';
+                this.elements.monsterMouth.style.height = '2px';
+
+                // Анимация падения монет
+                const coinCount = 5 + this.state.level * 2;
+                this._createCoins(coinCount);
+
+                // Добавление монет и бонусных очков
+                const levelBonus = this.state.level * 50;
+                this.state.score += levelBonus;
+                this.state.coins += coinCount;
+
+                this._updateUI();
+
+                // Звук завершения уровня
+                if (this.state.soundEnabled) {
+                    // this._playSound('levelComplete');
+                }
+
+                // Запуск следующего уровня после задержки
+                setTimeout(() => {
+                    this.state.level++;
+                    this.state.currentSteps = 0;
+                    this.state.stepsNeeded = 10 + (this.state.level - 1) * 5;
+                    if (this.state.stepsNeeded > 30) this.state.stepsNeeded = 30;
+
+                    this.state.paused = false;
+
+                    // Сброс позиций игрока и монстра
+                    this.elements.player.style.bottom = '150px';
+                    this.elements.monster.style.transform = 'translateX(-50%) scale(1)';
+                    this.elements.monster.style.opacity = '1';
+                    this.elements.monster.style.rotate = '0deg';
+
+                    this._updateUI();
+                    this._updateEnvironment();
+                    this._startMonsterBehavior();
+                    this._showLevelInfo();
+                }, 2000);
+            }
+
+            /**
+             * Создает анимированные монеты
+             * @param {number} count - Количество монет
+             * @private
+             */
+            _createCoins(count) {
+                for (let i = 0; i < count; i++) {
+                    const coin = document.createElement('div');
+                    coin.className = 'coins';
+
+                    // Позиционирование монеты рядом с монстром
+                    const monsterRect = this.elements.monster.getBoundingClientRect();
+                    const randomOffsetX = Math.random() * 80 - 40;
+                    const randomOffsetY = Math.random() * 40 - 20;
+
+                    coin.style.left = `${monsterRect.left + monsterRect.width / 2 + randomOffsetX}px`;
+                    coin.style.top = `${monsterRect.top + monsterRect.height / 2 + randomOffsetY}px`;
+
+                    this.elements.gameArea.appendChild(coin);
+
+                    // Анимация монеты
                     setTimeout(() => {
-                        if (!gameState.paused && !gameState.gameOver) {
-                            // Monster waking up
-                            gameState.monsterAwake = true;
-                            monsterWake();
-                        }
-                    }, pattern.sleepTime);
+                        coin.style.opacity = '1';
+                        coin.style.transform = `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 + 50}px)`;
+                    }, i * 50);
+
+                    // Удаление монеты после анимации
+                    setTimeout(() => {
+                        coin.remove();
+                    }, 1500);
                 }
-            }, pattern.sleepTime + pattern.awakeTime);
+            }
 
-            // Start with monster sleeping
-            gameState.monsterAwake = false;
-            monsterSleep();
+            /**
+             * Показывает информацию о текущем уровне
+             * @private
+             */
+            _showLevelInfo() {
+                this.elements.levelNumber.textContent = this.state.level;
+                const levelIndex = Math.min(this.state.level - 1, this.state.levelDescriptions.length - 1);
+                this.elements.levelDesc.textContent = this.state.levelDescriptions[levelIndex];
 
-            setTimeout(() => {
-                if (!gameState.paused && !gameState.gameOver) {
-                    gameState.monsterAwake = true;
-                    monsterWake();
+                this.elements.levelInfo.style.opacity = '1';
+
+                setTimeout(() => {
+                    this.elements.levelInfo.style.opacity = '0';
+                }, 2000);
+            }
+
+            /**
+             * Заканчивает игру
+             * @private
+             */
+            _endGame() {
+                this.state.gameOver = true;
+                clearInterval(this.monsterTimer);
+
+                // Анимация того, как монстр ловит игрока
+                this.elements.monster.style.transform = 'translateX(-50%) scale(1.5)';
+                this.elements.monsterMouth.style.height = '25px';
+                this.elements.monsterMouth.style.width = '50px';
+
+                this.elements.player.style.opacity = '0.5';
+                this.elements.player.style.transform = 'translateX(-50%) scale(0.8) rotate(180deg)';
+
+                // Звук окончания игры
+                if (this.state.soundEnabled) {
+                    // this._playSound('gameOver');
                 }
-            }, pattern.sleepTime);
-        }
 
-        // Monster sleep animation
-        function monsterSleep() {
-            const player = document.getElementById('player');
+                // Показать экран окончания игры
+                this.elements.finalScoreElement.textContent = this.state.score;
+                this.elements.gameOverScreen.style.opacity = '1';
+                this.elements.gameOverScreen.style.pointerEvents = 'auto';
+            }
 
-            // Остановить дыхательную анимацию и начать анимацию сна
-            monster.style.animation = 'none';
-            setTimeout(() => { monster.style.animation = 'pulse 2s infinite alternate'; }, 10);
+            /**
+             * Переключает состояние паузы
+             * @private
+             */
+            _togglePause() {
+                this.state.paused = !this.state.paused;
+                this.elements.pauseButton.textContent = this.state.paused ? 'Resume' : 'Pause';
 
-            monster.style.transform = 'translateX(-50%) scale(1)';
-            monster.style.filter = 'brightness(0.7)';
+                if (!this.state.paused) {
+                    // Возобновление поведения монстра
+                    this._startMonsterBehavior();
+                }
+            }
 
-            // Eyes close
-            monsterEyes.forEach(eye => {
-                eye.style.animation = 'none';
-                eye.style.transform = 'scaleY(0.1)';
-            });
+            /**
+             * Перезапуск игры
+             * @private
+             */
+            _restartGame() {
+                clearInterval(this.monsterTimer);
+                this.elements.gameOverScreen.style.opacity = '0';
+                this.elements.gameOverScreen.style.pointerEvents = 'none';
 
-            // Mouth relaxes
-            monsterMouth.style.height = '2px';
-            monsterMouth.style.width = '20px';
-            monsterMouth.style.backgroundColor = '#222';
+                // Сброс позиций игрока и монстра
+                this.elements.player.style.bottom = '150px';
+                this.elements.player.style.opacity = '1';
+                this.elements.player.style.transform = 'translateX(-50%) scale(1)';
+                this.elements.playerFeetLeft.style.transform = 'rotate(0deg)';
+                this.elements.playerFeetRight.style.transform = 'rotate(0deg)';
 
-            // Скрыть зубы и язык
-            document.querySelector('.monster-teeth').style.display = 'none';
-            document.querySelector('.monster-tongue').style.display = 'none';
+                this.elements.monster.style.transform = 'translateX(-50%) scale(1)';
+                this.elements.monster.style.opacity = '1';
+                this.elements.monsterMouth.style.height = '8px';
+                this.elements.monsterMouth.style.width = '40px';
 
-            monsterVision.style.display = 'none';
-            monsterSleepText.style.opacity = '1';
-            player.classList.remove('scared');
+                // Сброс и перезапуск игры
+                this._resetGameState();
+                this._updateUI();
+                this._startMonsterBehavior();
+                this._showLevelInfo();
+                this._updateEnvironment();
+            }
 
-            // Play sleep sound if enabled
-            if (gameState.soundEnabled) {
-                // Play sleep sound (placeholder)
-                // sleepSound.play();
+            /**
+             * Открывает модальное окно
+             * @param {string} modalId - ID модального окна
+             * @private
+             */
+            _openModal(modalId) {
+                const modal = document.getElementById(modalId);
+                modal.classList.add('show');
+                this.state.paused = true;
+            }
+
+            /**
+             * Закрывает все модальные окна
+             * @private
+             */
+            _closeAllModals() {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    modal.classList.remove('show');
+                });
+                if (!this.state.gameOver) {
+                    this.state.paused = false;
+                }
+            }
+
+            /**
+             * Сохраняет настройки
+             * @private
+             */
+            _saveSettings() {
+                this.state.soundEnabled = this.elements.soundToggle.checked;
+                this.state.difficulty = this.elements.difficultySelect.value;
+
+                // Если игра в процессе, обновляем поведение монстра для новой сложности
+                if (!this.state.gameOver) {
+                    this._startMonsterBehavior();
+                }
+
+                this._closeAllModals();
+            }
+
+            /**
+             * Воспроизводит звук
+             * @param {string} soundType - Тип звука
+             * @private
+             */
+            _playSound(soundType) {
+                // Заглушка для воспроизведения звуков
+                // В реальной реализации здесь был бы код для воспроизведения звуков
+                console.log(`Playing ${soundType} sound`);
             }
         }
 
-        // Monster wake animation
-        function monsterWake() {
-            monster.style.animation = 'monsterBreathing 2s infinite';
-            monster.style.transform = 'translateX(-50%) scale(1.2)';
-            monster.style.filter = 'brightness(1.2)';
-
-            // Eyes open wide with angry animation
-            monsterEyes.forEach((eye, index) => {
-                eye.style.animation = index === 0 ? 'blinkLeft 8s infinite' : 'blinkRight 8s infinite';
-                eye.style.transform = 'scale(1.2)';
-            });
-
-            // Pupils look around rapidly
-            document.querySelectorAll('.monster-pupil').forEach(pupil => {
-                pupil.style.animation = 'lookAround 2s infinite';
-            });
-
-            // Mouth opens with teeth and tongue
-            monsterMouth.style.height = '15px';
-            monsterMouth.style.width = '40px';
-            monsterMouth.style.borderRadius = '10px 10px 20px 20px';
-            monsterMouth.style.backgroundColor = '#333';
-
-            // Показать зубы и язык
-            document.querySelector('.monster-teeth').style.display = 'flex';
-            document.querySelector('.monster-tongue').style.display = 'block';
-
-            // Пульсирующее видение
-            monsterVision.style.display = 'block';
-            monsterVision.style.animation = 'visionPulse 2s infinite alternate';
-
-            monsterSleepText.style.opacity = '0';
-            showFear();
-
-            // Добавить эффект дрожания для большего страха
-            monster.classList.add('shaking');
-            setTimeout(() => { monster.classList.remove('shaking'); }, 2000);
-
-            // Play wake sound if enabled
-            if (gameState.soundEnabled) {
-                // Play wake sound (placeholder)
-                // wakeSound.play();
-            }
-        }
-
-        // Player step animation
-        function animateStep() {
-            stepCount++;
-
-            if (stepCount % 2 === 0) {
-                playerFeetLeft.style.transform = 'rotate(-20deg)';
-                playerFeetRight.style.transform = 'rotate(0deg)';
-            } else {
-                playerFeetLeft.style.transform = 'rotate(0deg)';
-                playerFeetRight.style.transform = 'rotate(20deg)';
-            }
-
-            // Play step sound if enabled
-            if (gameState.soundEnabled) {
-                // Play step sound (placeholder)
-                // stepSound.play();
-            }
-        }
-
-        // Player step action
-        function playerStep() {
-            if (gameState.paused || gameState.gameOver) return;
-
-            if (gameState.monsterAwake) {
-                // Player got caught
-                endGame();
-                return;
-            }
-
-            // Successful step
-            gameState.currentSteps++;
-
-            // Move player closer to monster
-            const progressPercentage = gameState.currentSteps / gameState.stepsNeeded;
-            player.style.bottom = `${150 - (progressPercentage * 100)}px`;
-
-            // Visual feedback
-            player.style.transform = 'translateX(-50%) scale(1.1)';
-            animateStep();
-            addPoints(Math.floor(Math.random() * 10) + 1);
-
-            setTimeout(() => {
-                player.style.transform = 'translateX(-50%) scale(1)';
-            }, 100);
-
-            updateUI();
-
-            // Check if level completed
-            if (gameState.currentSteps >= gameState.stepsNeeded) {
-                completeLevel();
-            }
-        }
-
-        // Add points indicator
-        function addPoints(amount, sourceElement = null) {
-            const pointsElement = document.createElement('div');
-            pointsElement.className = 'points';
-            pointsElement.textContent = '+' + amount;
-
-            if (sourceElement) {
-                const rect = sourceElement.getBoundingClientRect();
-                pointsElement.style.left = (rect.left + rect.width / 2) + 'px';
-                pointsElement.style.top = rect.top + 'px';
-            } else {
-                pointsElement.style.left = (Math.random() * (window.innerWidth - 100) + 50) + 'px';
-                pointsElement.style.top = (Math.random() * (window.innerHeight / 2) + 200) + 'px';
-            }
-
-            document.body.appendChild(pointsElement);
-
-            // Animate
-            setTimeout(() => {
-                pointsElement.style.opacity = '1';
-                pointsElement.style.transform = 'translateY(-50px)';
-            }, 10);
-
-            setTimeout(() => {
-                pointsElement.style.opacity = '0';
-            }, 800);
-
-            setTimeout(() => {
-                pointsElement.remove();
-            }, 1000);
-
-            // Update score
-            gameState.score += amount;
-        }
-
-        // Complete current level
-        function completeLevel() {
-            clearInterval(monsterTimer);
-            monsterSleepText.style.opacity = '0';
-            gameState.paused = true;
-
-            // Monster defeated animation
-            monster.style.transform = 'translateX(-50%) scale(0.8) rotate(180deg)';
-            monster.style.opacity = '0.5';
-            monsterMouth.style.height = '2px';
-
-            // Coin drop animation
-            const coinCount = 5 + gameState.level * 2;
-            for (let i = 0; i < coinCount; i++) {
-                const coin = document.createElement('div');
-                coin.className = 'coins';
-
-                // Position coin near monster
-                const monsterRect = monster.getBoundingClientRect();
-                const randomOffsetX = Math.random() * 80 - 40;
-                const randomOffsetY = Math.random() * 40 - 20;
-
-                coin.style.left = `${monsterRect.left + monsterRect.width / 2 + randomOffsetX}px`;
-                coin.style.top = `${monsterRect.top + monsterRect.height / 2 + randomOffsetY}px`;
-
-                gameArea.appendChild(coin);
-
-                // Animate coin
-                setTimeout(() => {
-                    coin.style.opacity = '1';
-                    coin.style.transform = `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 + 50}px)`;
-                }, i * 50);
-
-                // Remove coin after animation
-                setTimeout(() => {
-                    coin.remove();
-                }, 1500);
-            }
-
-            // Add coins and bonus points
-            const levelBonus = gameState.level * 50;
-            gameState.score += levelBonus;
-            gameState.coins += coinCount;
-
-            updateUI();
-
-            // Play level complete sound if enabled
-            if (gameState.soundEnabled) {
-                // Play level complete sound (placeholder)
-                // levelCompleteSound.play();
-            }
-
-            // Start next level after delay
-            setTimeout(() => {
-                gameState.level++;
-                gameState.currentSteps = 0;
-                gameState.stepsNeeded = 10 + (gameState.level - 1) * 5;
-                if (gameState.stepsNeeded > 30) gameState.stepsNeeded = 30;
-
-                gameState.paused = false;
-
-                // Reset player and monster
-                player.style.bottom = '150px';
-                monster.style.transform = 'translateX(-50%) scale(1)';
-                monster.style.opacity = '1';
-                monster.style.rotate = '0deg';
-
-                updateUI();
-                updateEnvironment();
-                startMonsterBehavior();
-                showLevelInfo();
-            }, 2000);
-        }
-
-        // Show level information
-        function showLevelInfo() {
-            levelNumber.textContent = gameState.level;
-            const levelIndex = Math.min(gameState.level - 1, gameState.levelDescriptions.length - 1);
-            levelDesc.textContent = gameState.levelDescriptions[levelIndex];
-
-            levelInfo.style.opacity = '1';
-
-            setTimeout(() => {
-                levelInfo.style.opacity = '0';
-            }, 2000);
-        }
-
-        // End the game
-        function endGame() {
-            gameState.gameOver = true;
-            clearInterval(monsterTimer);
-
-            // Monster catching player animation
-            monster.style.transform = 'translateX(-50%) scale(1.5)';
-            monsterMouth.style.height = '25px';
-            monsterMouth.style.width = '50px';
-
-            player.style.opacity = '0.5';
-            player.style.transform = 'translateX(-50%) scale(0.8) rotate(180deg)';
-
-            // Play game over sound if enabled
-            if (gameState.soundEnabled) {
-                // Play game over sound (placeholder)
-                // gameOverSound.play();
-            }
-
-            // Show game over screen
-            finalScoreElement.textContent = gameState.score;
-            gameOverScreen.style.opacity = '1';
-            gameOverScreen.style.pointerEvents = 'auto';
-        }
-
-        // Toggle pause state
-        function togglePause() {
-            gameState.paused = !gameState.paused;
-            pauseButton.textContent = gameState.paused ? 'Resume' : 'Pause';
-
-            if (!gameState.paused) {
-                // Resume monster behavior
-                startMonsterBehavior();
-            }
-        }
-
-        // Restart the game
-        function restartGame() {
-            clearInterval(monsterTimer);
-            gameOverScreen.style.opacity = '0';
-            gameOverScreen.style.pointerEvents = 'none';
-
-            // Reset player and monster
-            player.style.bottom = '150px';
-            player.style.opacity = '1';
-            player.style.transform = 'translateX(-50%) scale(1)';
-            playerFeetLeft.style.transform = 'rotate(0deg)';
-            playerFeetRight.style.transform = 'rotate(0deg)';
-
-            monster.style.transform = 'translateX(-50%) scale(1)';
-            monster.style.opacity = '1';
-            monsterMouth.style.height = '8px';
-            monsterMouth.style.width = '40px';
-
-            initGame();
-        }
-
-        // Save settings
-        function saveSettings() {
-            gameState.soundEnabled = soundToggle.checked;
-            gameState.difficulty = difficultySelect.value;
-
-            // If game is in progress, update monster behavior for new difficulty
-            if (!gameState.gameOver) {
-                startMonsterBehavior();
-            }
-
-            closeAllModals();
-        }
-
-        // Event listeners
-        actionButton.addEventListener('click', playerStep);
-        restartButton.addEventListener('click', restartGame);
-        pauseButton.addEventListener('click', togglePause);
-        restartGameButton.addEventListener('click', restartGame);
-        settingsButton.addEventListener('click', () => openModal('settings-modal'));
-        helpButton.addEventListener('click', () => openModal('help-modal'));
-        saveSettingsButton.addEventListener('click', saveSettings);
-
-        // Close modal when clicking close buttons
-        document.querySelectorAll('[data-close-modal]').forEach(button => {
-            button.addEventListener('click', closeAllModals);
+        // Инициализация игры при загрузке страницы
+        window.addEventListener('DOMContentLoaded', () => {
+            const game = new MonsterRunnerGame();
+            game.init();
         });
-
-        // Touch events optimization for mobile
-        actionButton.addEventListener('touchstart', function (e) {
-            e.preventDefault();
-            playerStep();
-        });
-
-        // Initialize the game on load
-        window.addEventListener('load', initGame);
     </script>
 </body>
 
